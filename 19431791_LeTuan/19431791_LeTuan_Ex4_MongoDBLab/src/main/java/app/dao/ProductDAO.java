@@ -109,5 +109,16 @@ public class ProductDAO {
 		return result;
 
 	}
+	//delete
+	public void deleteCus(String id) {
+		Bson fil = Filters.eq("_id", id);
+		try {
+			cusCol.findOneAndDelete(fil);
+			System.out.println("Success");
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Fail");
+		}
+	}
 
 }
