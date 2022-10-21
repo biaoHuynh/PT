@@ -1,0 +1,68 @@
+package app.dao;
+
+import java.util.List;
+
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.conversions.Bson;
+
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.InsertManyResult;
+import com.mongodb.client.result.InsertOneResult;
+import com.mongodb.client.result.UpdateResult;
+
+
+import app.db.ConnectDB;
+import app.entity.Product;
+
+public class ProductDAO {
+	private MongoCollection<Product> proCol;
+	
+	public ProductDAO() {
+		PojoCodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+
+		CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+				CodecRegistries.fromProviders(pojoCodecProvider));
+
+		this.proCol = ConnectDB.getInstance().getMongoClient().getDatabase("BikeStores")
+				.getCollection("products", Product.class).withCodecRegistry(codecRegistry);
+	}
+	
+	public boolean addOneProduct(Product product) {
+		InsertOneResult result = proCol.insertOne(product);
+		if(result.getInsertedId() != null)
+			return true;
+		return false;
+	}
+	
+	public boolean addManyProduct(List<Product> products) {
+		InsertManyResult result = proCol.insertMany(products);
+		if(result.getInsertedIds().size() > 0) {
+			products.forEach(pro -> System.out.println(pro.getProductId()));
+			return true;
+		}
+			
+		return false;
+	}
+	
+	public boolean updateOneProduct(long productId, double price ) {
+		Bson filter = Filters.eq("_id", productId);
+		Bson update = Updates.set("price", price);
+		
+		UpdateResult result = proCol.updateOne(filter, update);
+		return result.getMatchedCount() > 0;
+	}
+	
+	public boolean updateManyProduct(String category, int modelYear) {
+		Bson filter = Filters.eq("category_name", category);
+		Bson updates = Updates.set("model_year", modelYear);
+		
+		UpdateResult result = proCol.updateMany(filter, updates);
+		return result.getMatchedCount() > 0;
+	}
+	
+}

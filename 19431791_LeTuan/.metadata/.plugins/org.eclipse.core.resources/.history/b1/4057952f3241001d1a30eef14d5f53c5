@@ -1,0 +1,21 @@
+package app;
+
+import java.util.Arrays;
+
+import app.dao.ProductDAO;
+import app.entity.Product;
+
+public class ProductApp {
+	public static void main(String[] args) {
+		ProductDAO productDAO = new ProductDAO();
+		
+		 if(productDAO.addOneProduct(new Product(19431791L, "Dong Phong",
+		  "Quat", "Quat Gio", Arrays.asList("White", "black"), 2022, 150)))
+		  System.out.println("added"); else System.out.println("err");
+		 
+
+		productDAO.addManyProduct(Arrays.asList(
+				new Product(19431792L, "Dong Phong", "Quat", "Quat Gio 1", Arrays.asList("White", "black"), 2022, 151),
+				new Product(19431793L, "Dong Phong", "Quat", "Quat Gio 2", Arrays.asList("White", "black"), 2022, 152)));
+	}
+}

@@ -1,0 +1,7 @@
+INDEX VERSION 1.131+T:\19431791_LeTuan\.metadata\.plugins\org.eclipse.jdt.core
+2362372990.index
+2260603774.index
+1552042055.index
+2447214364.index
+1419620710.index
+2363896904.index
